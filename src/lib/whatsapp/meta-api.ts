@@ -152,6 +152,12 @@ export async function registerPhoneNumber(
   if (/already.*registered/i.test(message)) {
     return { success: true, alreadyRegistered: true }
   }
+  // Cloud API numbers for SMB accounts are pre-registered by Meta —
+  // the /register endpoint is only available to BSPs. Treat this as
+  // success: the number is already live on Cloud API.
+  if (/not available for SMB/i.test(message)) {
+    return { success: true, alreadyRegistered: true }
+  }
   throw new Error(message)
 }
 
